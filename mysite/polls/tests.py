@@ -1,11 +1,13 @@
 import datetime
 
+from django import forms
 from django.test import TestCase
 from django.utils import timezone
 from django.urls import reverse
+from django.core.exceptions import ValidationError
 
 from .models import Question, Choice
-from .admin import QuestionAdminForm, ChoiceAdminForm
+from .admin import contains_curse_words
 
 
 def create_question(question_text, days):
@@ -107,19 +109,58 @@ class QuestionModelTests(TestCase):
         self.assertIs(recent_question.was_published_recently(), True)
 
     
-# class CurseWordTests(TestCase):
+class CurseWordTests(TestCase):
+    def test_no_curse_words(self):
+        """
+        contains_curse_words(entry) returns empty list if a user
+        entry contains no curse words
+        """
+        entry = "a perfectly clean sentence with no curse words"
+        expected = []
+        self.assertEquals(contains_curse_words(entry), expected)
 
-#     def test_question_contains_heck(self):
-#         """
-#         validate_no_curse_words() returns false if question submission
-#         contains the word "heck"
-#         """
-#         admin = QuestionAdminForm()
-#         field = "question_text"
-#         entry = "heck"
-#         self.assertIs(admin.validate_no_curse_words(field, entry, admin), False)
+    def test_entry_is_curse_word(self):
+        """
+        contains_curse_words(entry) returns the proper curse word
+        when a user submission is a curse word
+        """
+        entry = "heck"
+        expected = ["heck"]
+        self.assertEquals(contains_curse_words(entry), expected)
 
-    # def test_choice_contains_hella(self):
-    # def test_question_contains_CRimInY(self):
-    # def test_question_contains_asdHECKasd(self):
-    # def test_question_contains heckhellacriminy(self):
+    def test_entry_contains_curse_word(self):
+        """
+        contains_curse_words(entry) returns the proper curse word
+        when a user submission contains a curse word
+        """
+        entry = "testhella"
+        expected = ["hella"]
+        self.assertEquals(contains_curse_words(entry), expected)
+
+    def test_curse_word_weird_capitalization(self):
+        """
+        contains_curse_words(entry) returns the proper curse word
+        when a user submission contains a curse word irregardless of
+        capitalization
+        """
+        entry = "test CRimInY test"
+        expected = ["criminy"]
+        self.assertEquals(contains_curse_words(entry), expected)
+
+    def test_multiple_curse_words(self):
+        """
+        contains_curse_words(entry) returns the proper curse words
+        when a user submission contains multiple curse words
+        """
+        entry = "heck geez criminy"
+        expected = ["heck", "criminy", "geez"]
+        self.assertEquals(contains_curse_words(entry), expected)
+
+    def test_multiple_of_same_curse_word(self):
+        """
+        contains_curse_words(entry) returns a single curse word even
+        if that curse word appears more than once
+        """
+        entry = "heck heckheck"
+        expected = ['heck']
+        self.assertEquals(contains_curse_words(entry), expected)

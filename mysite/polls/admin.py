@@ -1,25 +1,31 @@
-from django.contrib import admin
-from django.core import validators
 from django import forms
-from django.contrib import messages
-from django.core.exceptions import ValidationError
-from django.utils.translation import gettext_lazy as _
+from django.contrib import admin
+# from django.contrib import messages
 
 from .models import Choice, Question
 
 import yaml
 
 
-def validate_no_curse_words(field, entry, obj):
-    flag = True
+def contains_curse_words(entry):
     with open("polls/curse_words.yaml", 'r') as stream:
         curse_words = yaml.safe_load(stream)
+    my_list = []
     for curse_word in curse_words:
         if curse_word in entry.lower():
-            msg = "Please don't use curse word: " + curse_word
-            obj.add_error(field, msg)
-            flag = False
-    return flag
+            my_list.append(curse_word)
+    return my_list
+
+# def validate_no_curse_words(field, entry, form):
+#     flag = True
+#     with open("polls/curse_words.yaml", 'r') as stream:
+#         curse_words = yaml.safe_load(stream)
+#     for curse_word in curse_words:
+#         if curse_word in entry.lower():
+#             msg = "Please don't use curse word: " + curse_word
+#             form.add_error(field, msg)
+#             flag = False
+#     return flag
 
 
 class QuestionAdminForm(forms.ModelForm):
@@ -27,7 +33,9 @@ class QuestionAdminForm(forms.ModelForm):
         cleaned_data = super().clean()
         field = "question_text"
         entry = cleaned_data.get(field)
-        validate_no_curse_words(field, entry, self)
+        for curse_word in contains_curse_words(entry):
+            msg = "Please don't use curse word: " + curse_word
+            self.add_error(field, msg)
 
 
 class ChoiceAdminForm(forms.ModelForm):
@@ -35,7 +43,9 @@ class ChoiceAdminForm(forms.ModelForm):
         cleaned_data = super().clean()
         field = "choice_text"
         entry = cleaned_data.get(field)
-        validate_no_curse_words(field, entry, self)
+        for curse_word in contains_curse_words(entry):
+            msg = "Please don't use curse word: " + curse_word
+            self.add_error(field, msg)
 
 
 class ChoiceInline(admin.TabularInline):
