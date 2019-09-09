@@ -4,7 +4,8 @@ from django.test import TestCase
 from django.utils import timezone
 from django.urls import reverse
 
-from .models import Question
+from .models import Question, Choice
+from .admin import QuestionAdminForm, ChoiceAdminForm
 
 
 def create_question(question_text, days):
@@ -104,3 +105,21 @@ class QuestionModelTests(TestCase):
             hours=23, minutes=59, seconds=59)
         recent_question = Question(pub_date=time)
         self.assertIs(recent_question.was_published_recently(), True)
+
+    
+# class CurseWordTests(TestCase):
+
+#     def test_question_contains_heck(self):
+#         """
+#         validate_no_curse_words() returns false if question submission
+#         contains the word "heck"
+#         """
+#         admin = QuestionAdminForm()
+#         field = "question_text"
+#         entry = "heck"
+#         self.assertIs(admin.validate_no_curse_words(field, entry, admin), False)
+
+    # def test_choice_contains_hella(self):
+    # def test_question_contains_CRimInY(self):
+    # def test_question_contains_asdHECKasd(self):
+    # def test_question_contains heckhellacriminy(self):

@@ -2,6 +2,7 @@ import datetime
 
 from django.db import models
 from django.utils import timezone
+# from django.core.exceptions import ValidationError
 
 
 class Question(models.Model):
@@ -18,6 +19,9 @@ class Question(models.Model):
     was_published_recently.boolean = True
     was_published_recently.short_description = 'Published recently?'
 
+    # def clean(self):
+    #     raise ValidationError("TEST")
+
 
 class Choice(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
@@ -26,3 +30,6 @@ class Choice(models.Model):
 
     def __str__(self):
         return self.choice_text
+
+    # def clean(self):
+    #     raise ValidationError("TEST")
