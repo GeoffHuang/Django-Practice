@@ -5,16 +5,17 @@ from django.utils import timezone
 
 import yaml
 
-curse_words_filepath = "polls/curse_words.yaml"
+CURSE_WORDS_FILEPATH = "polls/curse_words.yaml"
 
 
-def contains_curse_words(entry):
+# rename function
+def curse_words_in_entry(entry):
     """
     returns a list of curse words in entry
     returns empty list if entry has no curse words
     (curse words are listed in curse_words.yaml)
     """
-    with open(curse_words_filepath, 'r') as stream:
+    with open(CURSE_WORDS_FILEPATH, 'r') as stream:
         curse_words = yaml.safe_load(stream)
     my_list = []
     for curse_word in curse_words:
@@ -38,7 +39,7 @@ class Question(models.Model):
     was_published_recently.short_description = 'Published recently?'
 
     def save(self, *args, **kwargs):
-        if contains_curse_words(str(self)):
+        if curse_words_in_entry(str(self)):
             print("Please do not submit question text containing curse words.")
         else:
             super(Question, self).save(*args, **kwargs)
@@ -53,7 +54,7 @@ class Choice(models.Model):
         return self.choice_text
 
     def save(self, *args, **kwargs):
-        if contains_curse_words(str(self)):
+        if curse_words_in_entry(str(self)):
             print("Please do not submit choice text containing curse words.")
         else:
-            super(Question, self).save(*args, **kwargs)
+            super(Choice, self).save(*args, **kwargs)

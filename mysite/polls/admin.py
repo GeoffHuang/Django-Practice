@@ -2,7 +2,7 @@ from django import forms
 from django.contrib import admin
 
 from .models import Choice, Question
-from .models import contains_curse_words, curse_words_filepath
+from .models import curse_words_in_entry, CURSE_WORDS_FILEPATH
 
 
 class QuestionAdminForm(forms.ModelForm):
@@ -10,7 +10,7 @@ class QuestionAdminForm(forms.ModelForm):
         cleaned_data = super().clean()
         field = "question_text"
         entry = cleaned_data.get(field)
-        for curse_word in contains_curse_words(entry):
+        for curse_word in curse_words_in_entry(entry):
             msg = "Please don't use curse word: " + curse_word
             self.add_error(field, msg)
 
@@ -20,7 +20,7 @@ class ChoiceAdminForm(forms.ModelForm):
         cleaned_data = super().clean()
         field = "choice_text"
         entry = cleaned_data.get(field)
-        for curse_word in contains_curse_words(entry):
+        for curse_word in curse_words_in_entry(entry):
             msg = "Please don't use curse word: " + curse_word
             self.add_error(field, msg)
 
