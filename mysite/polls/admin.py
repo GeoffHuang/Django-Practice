@@ -2,7 +2,7 @@ from django import forms
 from django.contrib import admin
 
 from .models import Choice, Question
-from .models import contains_curse_words, curse_words_filepath
+from .models import curse_words_in_entry, CURSE_WORDS_FILEPATH
 
 
 class QuestionAdminForm(forms.ModelForm):

@@ -5,10 +5,10 @@ from django.utils import timezone
 
 import yaml
 
-curse_words_filepath = "polls/curse_words.yaml"
+CURSE_WORDS_FILEPATH = "polls/curse_words.yaml"
 
 
-def contains_curse_words(entry):
+def curse_words_in_entry(entry):
     """
     returns a list of curse words in entry
     returns empty list if entry has no curse words
