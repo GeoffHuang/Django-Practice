@@ -2,25 +2,7 @@ from django import forms
 from django.contrib import admin
 
 from .models import Choice, Question
-
-import yaml
-
-curse_words_filepath = "polls/curse_words.yaml"
-
-
-def contains_curse_words(entry):
-    """
-    returns a list of curse words in entry
-    (curse words are listed in curse_words.yaml)
-    returns empty list if entry has no curse words
-    """
-    with open(curse_words_filepath, 'r') as stream:
-        curse_words = yaml.safe_load(stream)
-    my_list = []
-    for curse_word in curse_words:
-        if curse_word in entry.lower():
-            my_list.append(curse_word)
-    return my_list
+from .models import contains_curse_words, curse_words_filepath
 
 
 class QuestionAdminForm(forms.ModelForm):
@@ -60,6 +42,7 @@ class QuestionAdmin(admin.ModelAdmin):
     list_display = ('question_text', 'pub_date', 'was_published_recently')
     list_filter = ['pub_date']
     search_fields = ['question_text']
+
 
 admin.site.register(Question, QuestionAdmin)
 admin.site.register(Choice)
