@@ -78,7 +78,6 @@ class QuestionIndexViewTests(TestCase):
 
 
 class QuestionModelTests(TestCase):
-
     def test_was_published_recently_with_future_question(self):
         """
         was_published_recently() returns False for questions
@@ -107,7 +106,7 @@ class QuestionModelTests(TestCase):
         recent_question = Question(pub_date=time)
         self.assertIs(recent_question.was_published_recently(), True)
 
-    
+
 class CurseWordTests(TestCase):
     def test_no_curse_words(self):
         """
@@ -116,7 +115,7 @@ class CurseWordTests(TestCase):
         """
         entry = "a perfectly clean sentence with no curse words"
         expected = []
-        self.assertEquals(contains_curse_words(entry), expected)
+        self.assertEqual(contains_curse_words(entry), expected)
 
     def test_entry_is_curse_word(self):
         """
@@ -125,7 +124,7 @@ class CurseWordTests(TestCase):
         """
         entry = "heck"
         expected = ["heck"]
-        self.assertEquals(contains_curse_words(entry), expected)
+        self.assertEqual(contains_curse_words(entry), expected)
 
     def test_entry_contains_curse_word(self):
         """
@@ -134,7 +133,7 @@ class CurseWordTests(TestCase):
         """
         entry = "testhella"
         expected = ["hella"]
-        self.assertEquals(contains_curse_words(entry), expected)
+        self.assertEqual(contains_curse_words(entry), expected)
 
     def test_curse_word_weird_capitalization(self):
         """
@@ -144,7 +143,7 @@ class CurseWordTests(TestCase):
         """
         entry = "test CRimInY test"
         expected = ["criminy"]
-        self.assertEquals(contains_curse_words(entry), expected)
+        self.assertEqual(contains_curse_words(entry), expected)
 
     def test_multiple_curse_words(self):
         """
@@ -153,7 +152,7 @@ class CurseWordTests(TestCase):
         """
         entry = "heck geez criminy"
         expected = ["heck", "criminy", "geez"]
-        self.assertEquals(contains_curse_words(entry), expected)
+        self.assertEqual(contains_curse_words(entry), expected)
 
     def test_multiple_of_same_curse_word(self):
         """
@@ -162,5 +161,4 @@ class CurseWordTests(TestCase):
         """
         entry = "heck heckheck"
         expected = ['heck']
-        self.assertEquals(contains_curse_words(entry), expected)
-        
+        self.assertEqual(contains_curse_words(entry), expected)
