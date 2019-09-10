@@ -9,6 +9,11 @@ curse_words_filepath = "polls/curse_words.yaml"
 
 
 def contains_curse_words(entry):
+    """
+    returns a list of curse words in entry
+    (curse words are listed in curse_words.yaml)
+    returns empty list if entry has no curse words
+    """
     with open(curse_words_filepath, 'r') as stream:
         curse_words = yaml.safe_load(stream)
     my_list = []
