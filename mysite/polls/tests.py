@@ -4,7 +4,6 @@ from django import forms
 from django.test import TestCase
 from django.utils import timezone
 from django.urls import reverse
-from django.core.exceptions import ValidationError
 
 from .models import Question, Choice
 from .admin import contains_curse_words
@@ -164,3 +163,4 @@ class CurseWordTests(TestCase):
         entry = "heck heckheck"
         expected = ['heck']
         self.assertEquals(contains_curse_words(entry), expected)
+        
