@@ -8,7 +8,6 @@ import yaml
 CURSE_WORDS_FILEPATH = "polls/curse_words.yaml"
 
 
-# rename function
 def curse_words_in_entry(entry):
     """
     returns a list of curse words in entry
@@ -58,3 +57,13 @@ class Choice(models.Model):
             print("Please do not submit choice text containing curse words.")
         else:
             super(Choice, self).save(*args, **kwargs)
+
+
+class Company(models.Model):
+    name = models.CharField(max_length=200)
+    description = models.CharField(max_length=200, null=True)
+    classification = models.CharField(max_length=200, default="B2A")
+    created_at = models.DateTimeField()
+    updated_at = models.DateTimeField()
+    
+
