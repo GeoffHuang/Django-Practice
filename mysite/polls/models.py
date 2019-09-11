@@ -24,6 +24,7 @@ def curse_words_in_entry(entry):
 
 
 class Question(models.Model):
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
     question_text = models.CharField(max_length=200)
     pub_date = models.DateTimeField('date published')
 
