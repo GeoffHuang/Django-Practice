@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib import admin
 
-from .models import Choice, Question
+from .models import Choice, Question, Company
 from .models import curse_words_in_entry, CURSE_WORDS_FILEPATH
 
 
@@ -46,3 +46,4 @@ class QuestionAdmin(admin.ModelAdmin):
 
 admin.site.register(Question, QuestionAdmin)
 admin.site.register(Choice)
+admin.site.register(Company)

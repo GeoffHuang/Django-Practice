@@ -65,5 +65,6 @@ class Company(models.Model):
     classification = models.CharField(max_length=200, default="B2A")
     created_at = models.DateTimeField()
     updated_at = models.DateTimeField()
-    
 
+    def __str__(self):
+        return self.name
