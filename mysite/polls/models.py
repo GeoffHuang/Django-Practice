@@ -38,7 +38,7 @@ class Question(models.Model):
     was_published_recently.short_description = 'Published recently?'
 
     def save(self, *args, **kwargs):
-        if contains_curse_words(str(self)):
+        if curse_words_in_entry(str(self)):
             print("Please do not submit question text containing curse words.")
         else:
             super(Question, self).save(*args, **kwargs)
@@ -53,7 +53,17 @@ class Choice(models.Model):
         return self.choice_text
 
     def save(self, *args, **kwargs):
-        if contains_curse_words(str(self)):
+        if curse_words_in_entry(str(self)):
             print("Please do not submit choice text containing curse words.")
         else:
             super(Question, self).save(*args, **kwargs)
+
+
+class Company(models.Model):
+    name = models.CharField(max_length=200)
+    description = models.CharField(max_length=200, null=True)
+    classification = models.CharField(max_length=200, default="B2A")
+    created_at = models.DateTimeField()
+    updated_at = models.DateTimeField()
+    
+
