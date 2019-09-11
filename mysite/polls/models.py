@@ -14,7 +14,7 @@ def curse_words_in_entry(entry):
     returns empty list if entry has no curse words
     (curse words are listed in curse_words.yaml)
     """
-    with open(curse_words_filepath, 'r') as stream:
+    with open(CURSE_WORDS_FILEPATH, 'r') as stream:
         curse_words = yaml.safe_load(stream)
     my_list = []
     for curse_word in curse_words:
