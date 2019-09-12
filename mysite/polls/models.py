@@ -2,6 +2,7 @@ import datetime
 
 from django.db import models
 from django.utils import timezone
+from django.forms import ModelForm
 
 import yaml
 
@@ -72,3 +73,9 @@ class Choice(models.Model):
             print("Please do not submit choice text containing curse words.")
         else:
             super(Choice, self).save(*args, **kwargs)
+
+
+class QuestionForm(ModelForm):
+    class Meta:
+        model = Question
+        fields = ['company', 'question_text', 'pub_date']

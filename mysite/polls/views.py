@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.views import generic
 from django.utils import timezone
 
-from .models import Choice, Question, Company
+from .models import Choice, Question, Company, QuestionForm
 from .forms import NameForm
 
 
@@ -53,20 +53,14 @@ def vote(request, question_id):
             reverse('polls:results', args=(question.id,)))
 
 
-def get_name(request):
-    # if this is a POST request we need to process the form data
+def submission(request):
     if request.method == 'POST':
-        # create a form instance and populate it with data from the request:
-        form = NameForm(request.POST)
-        # check whether it's valid:
+        form = QuestionForm(request.POST)
         if form.is_valid():
-            # process the data in form.cleaned_data as required
-            # ...
-            # redirect to a new URL:
+            form.save()
             return HttpResponseRedirect(reverse('polls:index'))
 
-    # if a GET (or any other method) we'll create a blank form
     else:
-        form = NameForm()
+        form = QuestionForm()
 
-    return render(request, 'polls/name.html', {'form': form})
+    return render(request, 'polls/question.html', {'form': form})
