@@ -24,11 +24,11 @@ def curse_words_in_entry(entry):
 
 
 class Company(models.Model):
-    name = models.CharField(max_length=200)
+    name = models.CharField(max_length=200, unique=True)
     description = models.CharField(max_length=200, null=True)
-    classification = models.CharField(max_length=200, default="B2A")
-    created_at = models.DateTimeField(default=timezone.now(), editable=False)
-    updated_at = models.DateTimeField(default=timezone.now, editable=False)
+    classification = models.CharField(max_length=3, default="B2A")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.name
@@ -40,7 +40,7 @@ class Company(models.Model):
 class Question(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     question_text = models.CharField(max_length=200)
-    pub_date = models.DateTimeField('date published')
+    pub_date = models.DateTimeField('date published', default=timezone.now)
 
     def __str__(self):
         return self.question_text
