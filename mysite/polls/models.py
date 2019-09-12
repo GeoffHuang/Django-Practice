@@ -78,4 +78,4 @@ class Choice(models.Model):
 class QuestionForm(ModelForm):
     class Meta:
         model = Question
-        fields = ['company', 'question_text', 'pub_date']
+        fields = ['company', 'question_text']
