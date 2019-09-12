@@ -5,7 +5,6 @@ from django.views import generic
 from django.utils import timezone
 
 from .models import Choice, Question, Company, QuestionForm
-from .forms import NameForm
 
 
 class IndexView(generic.ListView):
@@ -63,4 +62,4 @@ def submission(request):
     else:
         form = QuestionForm()
 
-    return render(request, 'polls/question.html', {'form': form})
+    return render(request, 'polls/submit.html', {'form': form})
