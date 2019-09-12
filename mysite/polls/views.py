@@ -5,6 +5,7 @@ from django.views import generic
 from django.utils import timezone
 
 from .models import Choice, Question, Company
+from .forms import NameForm
 
 
 class IndexView(generic.ListView):
@@ -13,8 +14,8 @@ class IndexView(generic.ListView):
 
     def get_queryset(self):
         """
-        Return the last five published questions (not including those set to be
-        published in the future).
+        Return the last twenty published questions (not including those set to
+        be published in the future).
         """
         return Question.objects.filter(
             pub_date__lte=timezone.now()
@@ -50,3 +51,22 @@ def vote(request, question_id):
         # user hits the Back button.
         return HttpResponseRedirect(
             reverse('polls:results', args=(question.id,)))
+
+
+def get_name(request):
+    # if this is a POST request we need to process the form data
+    if request.method == 'POST':
+        # create a form instance and populate it with data from the request:
+        form = NameForm(request.POST)
+        # check whether it's valid:
+        if form.is_valid():
+            # process the data in form.cleaned_data as required
+            # ...
+            # redirect to a new URL:
+            return HttpResponseRedirect(reverse('polls:index'))
+
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        form = NameForm()
+
+    return render(request, 'polls/name.html', {'form': form})
