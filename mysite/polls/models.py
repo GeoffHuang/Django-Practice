@@ -27,8 +27,8 @@ class Company(models.Model):
     name = models.CharField(max_length=200)
     description = models.CharField(max_length=200, null=True)
     classification = models.CharField(max_length=200, default="B2A")
-    created_at = models.DateTimeField(timezone.now(), editable=False)
-    updated_at = models.DateTimeField(timezone.now, editable=False)
+    created_at = models.DateTimeField(default=timezone.now(), editable=False)
+    updated_at = models.DateTimeField(default=timezone.now, editable=False)
 
     def __str__(self):
         return self.name
