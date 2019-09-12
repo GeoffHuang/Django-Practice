@@ -21,7 +21,7 @@ def populate_db_with_fortune100(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('polls', '0002_company'),
+        ('polls', '0001_initial'),
     ]
 
     operations = [

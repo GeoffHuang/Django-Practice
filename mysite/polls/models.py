@@ -23,6 +23,20 @@ def curse_words_in_entry(entry):
     return my_list
 
 
+class Company(models.Model):
+    name = models.CharField(max_length=200)
+    description = models.CharField(max_length=200, null=True)
+    classification = models.CharField(max_length=200, default="B2A")
+    created_at = models.DateTimeField(timezone.now(), editable=False)
+    updated_at = models.DateTimeField(timezone.now, editable=False)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name_plural = "companies"
+
+
 class Question(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     question_text = models.CharField(max_length=200)
@@ -58,17 +72,3 @@ class Choice(models.Model):
             print("Please do not submit choice text containing curse words.")
         else:
             super(Choice, self).save(*args, **kwargs)
-
-
-class Company(models.Model):
-    name = models.CharField(max_length=200)
-    description = models.CharField(max_length=200, null=True)
-    classification = models.CharField(max_length=200, default="B2A")
-    created_at = models.DateTimeField()
-    updated_at = models.DateTimeField()
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        verbose_name_plural = "companies"
