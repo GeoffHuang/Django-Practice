@@ -58,8 +58,7 @@ def submission(request):
         if form.is_valid():
             form.save()
             return HttpResponseRedirect(reverse('polls:index'))
-
     else:
+        print("ASDASD")
         form = QuestionForm()
-
     return render(request, 'polls/submit.html', {'form': form})
