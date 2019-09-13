@@ -3,8 +3,9 @@ from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.views import generic
 from django.utils import timezone
+from django.forms import inlineformset_factory
 
-from .models import Choice, Question, Company, QuestionForm
+from .models import Choice, Question, Company, QuestionForm, ChoiceForm
 
 
 class IndexView(generic.ListView):
@@ -52,13 +53,42 @@ def vote(request, question_id):
             reverse('polls:results', args=(question.id,)))
 
 
+# def submission(request):
+#     if request.method == 'POST':
+#         form = QuestionForm(request.POST)
+#         if form.is_valid():
+#             form.save()
+#             return HttpResponseRedirect(reverse('polls:index'))
+#     else:
+#         form = QuestionForm()
+#     return render(request, 'polls/submit.html', {'form': form})
+
+
 def submission(request):
+    QuestionFormSet = inlineformset_factory(Question, Choice, fields=('choice_text',))
     if request.method == 'POST':
         form = QuestionForm(request.POST)
-        if form.is_valid():
-            form.save()
+        formset = QuestionFormSet(request.POST, request.FILES, instance=Question())
+        if form.is_valid() and formset.is_valid():
+            new_question = form.save()
+            for choice in formset:
+                new_choice = choice.save(commit=False)
+                new_choice.question = new_question
+                new_choice.save()
             return HttpResponseRedirect(reverse('polls:index'))
     else:
-        print("ASDASD")
         form = QuestionForm()
-    return render(request, 'polls/submit.html', {'form': form})
+        formset = QuestionFormSet(instance=Question())
+    return render(request, 'polls/submit.html', {'form': form, 'formset': formset})
+
+
+# def submission(request):
+#     if request.method == 'POST':
+#         questionform = QuestionForm(request.POST)
+#         choiceform = ChoiceForm(request.POST)
+#         if form.is_valid():
+#             form.save()
+#             return HttpResponseRedirect(reverse('polls:index'))
+#     else:
+#         form = QuestionForm()
+#     return render(request, 'polls/submit.html', {'form': form})
