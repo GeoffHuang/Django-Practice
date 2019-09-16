@@ -1,10 +1,12 @@
 import datetime
 
+from django import forms
 from django.test import TestCase
 from django.utils import timezone
 from django.urls import reverse
 
-from .models import Question
+from .models import Question, Choice
+from .models import curse_words_in_entry, CURSE_WORDS_FILEPATH
 
 
 def create_question(question_text, days):
@@ -76,7 +78,6 @@ class QuestionIndexViewTests(TestCase):
 
 
 class QuestionModelTests(TestCase):
-
     def test_was_published_recently_with_future_question(self):
         """
         was_published_recently() returns False for questions
@@ -104,3 +105,69 @@ class QuestionModelTests(TestCase):
             hours=23, minutes=59, seconds=59)
         recent_question = Question(pub_date=time)
         self.assertIs(recent_question.was_published_recently(), True)
+
+
+class CurseWordTests(TestCase):
+    def test_no_curse_words(self):
+        """
+        curse_words_in_entry(entry) returns empty list if a user
+        entry contains no curse words
+        """
+        entry = "a perfectly clean sentence with no curse words"
+        expected = []
+        self.assertEqual(curse_words_in_entry(entry), expected)
+
+    def test_entry_is_curse_word(self):
+        """
+        curse_words_in_entry(entry) returns the proper curse word
+        when a user submission is a curse word
+        """
+        entry = "heck"
+        expected = ["heck"]
+        self.assertEqual(curse_words_in_entry(entry), expected)
+
+    def test_entry_contains_curse_word(self):
+        """
+        curse_words_in_entry(entry) returns the proper curse word
+        when a user submission contains a curse word
+        """
+        entry = "testhella"
+        expected = ["hella"]
+        self.assertEqual(curse_words_in_entry(entry), expected)
+
+    def test_curse_word_weird_capitalization(self):
+        """
+        curse_words_in_entry(entry) returns the proper curse word
+        when a user submission contains a curse word irregardless of
+        capitalization
+        """
+        entry = "test CRimInY test"
+        expected = ["criminy"]
+        self.assertEqual(curse_words_in_entry(entry), expected)
+
+    def test_multiple_curse_words(self):
+        """
+        curse_words_in_entry(entry) returns the proper curse words
+        when a user submission contains multiple curse words
+        """
+        entry = "heck geez criminy"
+        expected = ["heck", "criminy", "geez"]
+        self.assertEqual(curse_words_in_entry(entry), expected)
+
+    def test_multiple_of_same_curse_word(self):
+        """
+        curse_words_in_entry(entry) returns a single curse word even
+        if that curse word appears more than once
+        """
+        entry = "heck heckheck"
+        expected = ['heck']
+        self.assertEqual(curse_words_in_entry(entry), expected)
+
+    def test_curse_word_entry_with_punctuation(self):
+        """
+        curse_words_in_entry(entry) returns the proper curse words even
+        if the curse words are separated by punctuation
+        """
+        entry = "heck.hella?criminy"
+        expected = ['heck', 'hella', 'criminy']
+        self.assertEqual(curse_words_in_entry(entry), expected)
