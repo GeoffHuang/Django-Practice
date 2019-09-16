@@ -79,9 +79,3 @@ class QuestionForm(ModelForm):
     class Meta:
         model = Question
         fields = ['company', 'question_text']
-
-
-class ChoiceForm(ModelForm):
-    class Meta:
-        model = Choice
-        fields = ['choice_text']

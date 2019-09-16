@@ -5,7 +5,9 @@ from django.views import generic
 from django.utils import timezone
 from django.forms import inlineformset_factory
 
-from .models import Choice, Question, Company, QuestionForm, ChoiceForm
+from .models import Choice, Question, Company, QuestionForm
+
+import json
 
 
 class IndexView(generic.ListView):
@@ -53,17 +55,6 @@ def vote(request, question_id):
             reverse('polls:results', args=(question.id,)))
 
 
-# def submission(request):
-#     if request.method == 'POST':
-#         form = QuestionForm(request.POST)
-#         if form.is_valid():
-#             form.save()
-#             return HttpResponseRedirect(reverse('polls:index'))
-#     else:
-#         form = QuestionForm()
-#     return render(request, 'polls/submit.html', {'form': form})
-
-
 def submission(request):
     QuestionFormSet = inlineformset_factory(Question, Choice, fields=('choice_text',))
     if request.method == 'POST':
@@ -82,13 +73,42 @@ def submission(request):
     return render(request, 'polls/submit.html', {'form': form, 'formset': formset})
 
 
-# def submission(request):
-#     if request.method == 'POST':
-#         questionform = QuestionForm(request.POST)
-#         choiceform = ChoiceForm(request.POST)
-#         if form.is_valid():
-#             form.save()
-#             return HttpResponseRedirect(reverse('polls:index'))
-#     else:
-#         form = QuestionForm()
-#     return render(request, 'polls/submit.html', {'form': form})
+def autocompleteModel(request):
+    print("TEST")
+    console.log("test")
+    if request.is_ajax():
+        q = request.GET.get('term', '').capitalize()
+        search_qs = Company.objects.filter(name__startswith=q)
+        results = []
+        print(q)
+        for r in search_qs:
+            r_json = {}
+            r_json['id'] = r.name
+            r_json['label'] = r.name
+            r_json['value'] = r.name
+            results.append(r_json)
+            #results.append(r.FIELD)
+        data = json.dumps(results)
+        print(results)
+    else:
+        data = 'fail'
+    mimetype = 'application/json'
+    return HttpResponse(data, mimetype)
+
+
+def get_company(request):
+    if request.is_ajax():
+        q = request.GET.get('term', '')
+        companies = Company.objects.filter(name__startswith=q)[:20]
+        results = []
+        for company in companies:
+            company_json = {}
+            # company_json['id'] = company.name
+            # company_json['label'] = company.name
+            company_json['value'] = company.name
+            results.append(company_json)
+        data = json.dumps(results)
+    else:
+        data = 'fail'
+    mimetype = 'application/json'
+    return HttpResponse(data, mimetype)
