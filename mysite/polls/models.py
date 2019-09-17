@@ -4,6 +4,8 @@ from django import forms
 from django.db import models
 from django.utils import timezone
 from django.forms import ModelForm, inlineformset_factory, TextInput
+from django.core.exceptions import ValidationError
+from django.forms.models import BaseInlineFormSet
 
 import yaml
 
@@ -69,6 +71,10 @@ class Choice(models.Model):
     def __str__(self):
         return self.choice_text
 
+    def clean(self):
+        if curse_words_in_entry(str(self)):
+            raise ValidationError("Please don't use curse words!!")
+
     def save(self, *args, **kwargs):
         if curse_words_in_entry(str(self)):
             print("Please do not submit choice text containing curse words.")
@@ -77,8 +83,6 @@ class Choice(models.Model):
 
 
 class QuestionForm(ModelForm):
-    #autocomplete_fields = ['company']
-
     company = forms.CharField(max_length=200)
 
     class Meta:
@@ -89,14 +93,18 @@ class QuestionForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(QuestionForm, self).__init__(*args, **kwargs)
         self.fields['company'].widget = TextInput(
-            attrs={'id': 'company', 'name': 'company'})
+            attrs={'id': 'company'})
 
-    #QuestionFormSet = inlineformset_factory(Question, Choice, fields=('choice_text',))
+    #ChoiceFormSet = inlineformset_factory(Question, Choice, fields=('choice_text',))
 
     def clean(self):
         cleaned_data = super().clean()
-        field = "question_text"
+        field = 'question_text'
         entry = cleaned_data.get(field)
         for curse_word in curse_words_in_entry(entry):
             msg = "Please don't use curse word: " + curse_word
             self.add_error(field, msg)
+        field = 'company'
+        entry = cleaned_data.get(field)
+        if Company.objects.get(name=entry) == Company.objects.none():
+            self.add_error(field, "Please enter a Fortune 100 company")

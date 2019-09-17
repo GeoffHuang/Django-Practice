@@ -10,19 +10,19 @@
         {{ form.question_text.errors }}
         {{ form.question_text.label_tag }}
         {{ form.question_text }} <br>
+        {{ form.company.errors }}
         {{ form.company.label_tag }}
         {{ form.company }}
         <!-- <input type="text" id="company" name="company"> -->
         <br> <br>
         {{ formset.management_form }}
         {% for form in formset %}
-            {{ form.errors }}
+            {{ form.field_errors }}
             {{ form }} <br>
         {% endfor %}
 
         <br>
         <input type="submit" value="Submit">
-        
     </form>
 </div>
 

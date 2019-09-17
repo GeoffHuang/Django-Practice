@@ -8,7 +8,7 @@ from .models import curse_words_in_entry, CURSE_WORDS_FILEPATH
 class QuestionAdminForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
-        field = "question_text"
+        field = 'question_text'
         entry = cleaned_data.get(field)
         for curse_word in curse_words_in_entry(entry):
             msg = "Please don't use curse word: " + curse_word
@@ -18,7 +18,7 @@ class QuestionAdminForm(forms.ModelForm):
 class ChoiceAdminForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
-        field = "choice_text"
+        field = 'choice_text'
         entry = cleaned_data.get(field)
         for curse_word in curse_words_in_entry(entry):
             msg = "Please don't use curse word: " + curse_word

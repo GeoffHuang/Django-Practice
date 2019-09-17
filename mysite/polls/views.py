@@ -55,14 +55,16 @@ def vote(request, question_id):
 
 
 def submission(request):
-    ChoiceFormSet = inlineformset_factory(Question, Choice, fields=('choice_text',))
+    ChoiceFormSet = inlineformset_factory(
+        Question, Choice, fields=('choice_text',))
     if request.method == 'POST':
         company_name = request.POST.get('company')
+        # company = Company.objects.none()
+        # if Company.objects.get(name=company_name) == Company.objects.none():
         company = Company.objects.get(name=company_name)
         q = Question(company=company)
         form = QuestionForm(request.POST, instance=q)
         formset = ChoiceFormSet(request.POST, instance=q)
-        print(form.is_valid())
         if form.is_valid() and formset.is_valid():
             new_question = form.save()
             for choice in formset:
@@ -73,7 +75,8 @@ def submission(request):
     else:
         form = QuestionForm()
         formset = ChoiceFormSet()
-    return render(request, 'polls/submit.html', {'form': form, 'formset': formset})
+    return render(request, 'polls/submit.html', {
+        'form': form, 'formset': formset})
 
 
 def company_autocomplete(request):
