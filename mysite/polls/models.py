@@ -1,8 +1,9 @@
 import datetime
 
+from django import forms
 from django.db import models
 from django.utils import timezone
-from django.forms import ModelForm, inlineformset_factory
+from django.forms import ModelForm, inlineformset_factory, TextInput
 
 import yaml
 
@@ -76,9 +77,19 @@ class Choice(models.Model):
 
 
 class QuestionForm(ModelForm):
+    #autocomplete_fields = ['company']
+
+    company = forms.CharField(max_length=200)
+
     class Meta:
         model = Question
-        fields = ['company', 'question_text']
+        fields = ['question_text']
+
+    # give {{ form.company }} an id tag for the AJAX autocomplete
+    def __init__(self, *args, **kwargs):
+        super(QuestionForm, self).__init__(*args, **kwargs)
+        self.fields['company'].widget = TextInput(
+            attrs={'id': 'company', 'name': 'company'})
 
     #QuestionFormSet = inlineformset_factory(Question, Choice, fields=('choice_text',))
 

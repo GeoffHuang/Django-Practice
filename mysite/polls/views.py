@@ -35,7 +35,6 @@ class ResultsView(generic.DetailView):
 
 
 def vote(request, question_id):
-
     question = get_object_or_404(Question, pk=question_id)
     try:
         selected_choice = question.choice_set.get(pk=request.POST['choice'])
@@ -58,10 +57,12 @@ def vote(request, question_id):
 def submission(request):
     QuestionFormSet = inlineformset_factory(Question, Choice, fields=('choice_text',))
     if request.method == 'POST':
-        form = QuestionForm(request.POST)
-        formset = QuestionFormSet(request.POST, request.FILES, instance=Question())
-        company = request.POST.get('company')
-        print(company)
+        company_name = request.POST.get('company')
+        company = Company.objects.get(name=company_name)
+        q = Question(company=company)
+        form = QuestionForm(request.POST, instance=q)
+        formset = QuestionFormSet(request.POST, instance=q)
+        print(form.is_valid())
         if form.is_valid() and formset.is_valid():
             new_question = form.save()
             for choice in formset:
@@ -79,7 +80,7 @@ def company_autocomplete(request):
     if request.is_ajax():
         q = request.GET.get('term', '')
         companies = Company.objects.filter(name__startswith=q)[:20]
-        print(Company.objects.get(name="Hilton") == Company.objects.none())
+        # print(Company.objects.get(name="Hilton") == Company.objects.none())
         results = []
         for company in companies:
             company_json = {}

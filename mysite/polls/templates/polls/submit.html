@@ -11,8 +11,8 @@
         {{ form.question_text.label_tag }}
         {{ form.question_text }} <br>
         {{ form.company.label_tag }}
-        <!-- {{ form.company }} -->
-        <input id="company" name="company">
+        {{ form.company }}
+        <!-- <input type="text" id="company" name="company"> -->
         <br> <br>
         {{ formset.management_form }}
         {% for form in formset %}

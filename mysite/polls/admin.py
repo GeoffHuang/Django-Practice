@@ -25,6 +25,10 @@ class ChoiceAdminForm(forms.ModelForm):
             self.add_error(field, msg)
 
 
+class CompanyAdmin(admin.ModelAdmin):
+    search_fields = ['name']
+
+
 class ChoiceInline(admin.TabularInline):
     form = ChoiceAdminForm
     model = Choice
@@ -32,9 +36,11 @@ class ChoiceInline(admin.TabularInline):
 
 
 class QuestionAdmin(admin.ModelAdmin):
+    autocomplete_fields = ['company']
     form = QuestionAdminForm
     fieldsets = [
         (None,               {'fields': ['question_text']}),
+        (None,               {'fields': ['company']}),
         ('Date information', {
             'fields': ['pub_date'], 'classes': ['collapse']}),
     ]
@@ -44,6 +50,6 @@ class QuestionAdmin(admin.ModelAdmin):
     search_fields = ['question_text']
 
 
+admin.site.register(Company, CompanyAdmin)
 admin.site.register(Question, QuestionAdmin)
 admin.site.register(Choice)
-admin.site.register(Company)
