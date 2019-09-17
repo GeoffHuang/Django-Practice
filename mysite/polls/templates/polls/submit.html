@@ -7,14 +7,16 @@
         {% csrf_token %}
         <h1>New Poll</h1>
 
+        {{ form.question_text.errors }}
         {{ form.question_text.label_tag }}
         {{ form.question_text }} <br>
         {{ form.company.label_tag }}
         <!-- {{ form.company }} -->
-        <input id="company">
+        <input id="company" name="company">
         <br> <br>
         {{ formset.management_form }}
         {% for form in formset %}
+            {{ form.errors }}
             {{ form }} <br>
         {% endfor %}
 
@@ -32,7 +34,7 @@
           source: "api/get_company/",
           minLength: 2
         });
-      } );
+    });
 
     // keeps same width as box
     jQuery.ui.autocomplete.prototype._resizeMenu = function () {

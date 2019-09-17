@@ -2,7 +2,7 @@ import datetime
 
 from django.db import models
 from django.utils import timezone
-from django.forms import ModelForm
+from django.forms import ModelForm, inlineformset_factory
 
 import yaml
 
@@ -79,3 +79,13 @@ class QuestionForm(ModelForm):
     class Meta:
         model = Question
         fields = ['company', 'question_text']
+
+    #QuestionFormSet = inlineformset_factory(Question, Choice, fields=('choice_text',))
+
+    def clean(self):
+        cleaned_data = super().clean()
+        field = "question_text"
+        entry = cleaned_data.get(field)
+        for curse_word in curse_words_in_entry(entry):
+            msg = "Please don't use curse word: " + curse_word
+            self.add_error(field, msg)

@@ -60,6 +60,8 @@ def submission(request):
     if request.method == 'POST':
         form = QuestionForm(request.POST)
         formset = QuestionFormSet(request.POST, request.FILES, instance=Question())
+        company = request.POST.get('company')
+        print(company)
         if form.is_valid() and formset.is_valid():
             new_question = form.save()
             for choice in formset:
@@ -73,33 +75,11 @@ def submission(request):
     return render(request, 'polls/submit.html', {'form': form, 'formset': formset})
 
 
-def autocompleteModel(request):
-    print("TEST")
-    console.log("test")
-    if request.is_ajax():
-        q = request.GET.get('term', '').capitalize()
-        search_qs = Company.objects.filter(name__startswith=q)
-        results = []
-        print(q)
-        for r in search_qs:
-            r_json = {}
-            r_json['id'] = r.name
-            r_json['label'] = r.name
-            r_json['value'] = r.name
-            results.append(r_json)
-            #results.append(r.FIELD)
-        data = json.dumps(results)
-        print(results)
-    else:
-        data = 'fail'
-    mimetype = 'application/json'
-    return HttpResponse(data, mimetype)
-
-
-def get_company(request):
+def company_autocomplete(request):
     if request.is_ajax():
         q = request.GET.get('term', '')
         companies = Company.objects.filter(name__startswith=q)[:20]
+        print(Company.objects.get(name="Hilton") == Company.objects.none())
         results = []
         for company in companies:
             company_json = {}
