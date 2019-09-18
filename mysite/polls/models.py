@@ -22,7 +22,7 @@ def curse_words_in_entry(entry):
         curse_words = yaml.safe_load(stream)
     my_list = []
     for curse_word in curse_words:
-        if curse_word in entry.lower():
+        if curse_word in entry.lower().split():
             my_list.append(curse_word)
     return my_list
 
