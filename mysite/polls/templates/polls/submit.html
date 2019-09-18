@@ -2,6 +2,14 @@
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript">
 </script> <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js" type="text/javascript"></script>
 
+<!-- {% if messages %}
+<ul>
+   {% for message in messages %}
+	   <li>{{ message }}</li>
+   {% endfor %}
+</ul>
+{% endif %} -->
+
 <div class="ui-widget">
     <form method="post">
         {% csrf_token %}
@@ -25,7 +33,6 @@
         <input type="submit" value="Submit">
     </form>
 </div>
-
 
 <script type="text/javascript">
     $(document).ready(function(){

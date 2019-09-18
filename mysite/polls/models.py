@@ -106,5 +106,5 @@ class QuestionForm(ModelForm):
             self.add_error(field, msg)
         field = 'company'
         entry = cleaned_data.get(field)
-        if Company.objects.get(name=entry) == Company.objects.none():
+        if not Company.objects.filter(name=entry):
             self.add_error(field, "Please enter a Fortune 100 company")

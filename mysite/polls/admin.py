@@ -27,6 +27,7 @@ class ChoiceAdminForm(forms.ModelForm):
 
 class CompanyAdmin(admin.ModelAdmin):
     search_fields = ['name']
+    list_display = ('name', 'created_at', 'updated_at')
 
 
 class ChoiceInline(admin.TabularInline):

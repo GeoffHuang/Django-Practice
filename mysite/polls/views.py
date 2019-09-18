@@ -4,6 +4,7 @@ from django.urls import reverse
 from django.views import generic
 from django.utils import timezone
 from django.forms import inlineformset_factory
+from django.contrib import messages
 
 from .models import Choice, Question, Company, QuestionForm
 
@@ -21,7 +22,7 @@ class IndexView(generic.ListView):
         """
         return Question.objects.filter(
             pub_date__lte=timezone.now()
-        ).order_by('-pub_date')[:20]
+        ).order_by('-pub_date')[:10]
 
 
 class DetailView(generic.DetailView):
@@ -56,12 +57,13 @@ def vote(request, question_id):
 
 def submission(request):
     ChoiceFormSet = inlineformset_factory(
-        Question, Choice, fields=('choice_text',))
+        Question, Choice, fields=('choice_text',), extra=2)
     if request.method == 'POST':
         company_name = request.POST.get('company')
-        # company = Company.objects.none()
-        # if Company.objects.get(name=company_name) == Company.objects.none():
-        company = Company.objects.get(name=company_name)
+        if not Company.objects.filter(name=company_name):
+            company = get_object_or_404(Company, pk=1)
+        else:
+            company = Company.objects.get(name=company_name)
         q = Question(company=company)
         form = QuestionForm(request.POST, instance=q)
         formset = ChoiceFormSet(request.POST, instance=q)
@@ -83,12 +85,9 @@ def company_autocomplete(request):
     if request.is_ajax():
         q = request.GET.get('term', '')
         companies = Company.objects.filter(name__startswith=q)[:20]
-        # print(Company.objects.get(name="Hilton") == Company.objects.none())
         results = []
         for company in companies:
             company_json = {}
-            # company_json['id'] = company.name
-            # company_json['label'] = company.name
             company_json['value'] = company.name
             results.append(company_json)
         data = json.dumps(results)
