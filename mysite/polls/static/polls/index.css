@@ -4,11 +4,11 @@ h1 {
 }
 
 li a {
-    color: magenta; 
+    /* color: magenta;  */
     font-size: 30px;
 }
 
-body {
+/* body {
     background: white url("images/background1.jpg") no-repeat;
     background-size: cover;
-}
+} */
