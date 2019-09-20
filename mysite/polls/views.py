@@ -9,6 +9,9 @@ from django.contrib import messages
 from .models import Choice, Question, Company, QuestionForm
 
 import json
+import csv
+
+TSV_FILEPATH = "polls/static/polls/data.tsv"
 
 
 class IndexView(generic.ListView):
@@ -30,9 +33,24 @@ class DetailView(generic.DetailView):
     template_name = 'polls/detail.html'
 
 
-class ResultsView(generic.DetailView):
-    model = Question
-    template_name = 'polls/results.html'
+# class ResultsView(generic.DetailView):
+#     model = Question
+#     template_name = 'polls/results.html'
+
+#     def get_vote_data(self, **kwargs):
+#         context['my_dictionary'] = json.dumps(self.object.mydict)
+#         print("ASD")
+
+
+# class based views suck
+def results(request, question_id):
+    question = get_object_or_404(Question, pk=question_id)
+    with open(TSV_FILEPATH, 'wt') as out_file:
+        tsv_writer = csv.writer(out_file, delimiter='\t')
+        tsv_writer.writerow(['name', 'value'])
+        for choice in question.choice_set.all():
+            tsv_writer.writerow([choice.choice_text, choice.votes])
+    return render(request, 'polls/results.html', {'question': question})
 
 
 def vote(request, question_id):
@@ -67,9 +85,11 @@ def submission(request):
         q = Question(company=company)
         form = QuestionForm(request.POST, instance=q)
         formset = ChoiceFormSet(request.POST, instance=q)
+        print("TEST")
         if form.is_valid() and formset.is_valid():
             new_question = form.save()
             for choice in formset:
+                print(type(choice))
                 new_choice = choice.save(commit=False)
                 new_choice.question = new_question
                 new_choice.save()

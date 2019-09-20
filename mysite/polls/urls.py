@@ -8,7 +8,8 @@ urlpatterns = [
     # using generic views
     path('', views.IndexView.as_view(), name='index'),
     path('<int:pk>/', views.DetailView.as_view(), name='detail'),
-    path('<int:pk>/results/', views.ResultsView.as_view(), name='results'),
+    # path('<int:pk>/results/', views.ResultsView.as_view(), name='results'),
+    path('<int:question_id>/results/', views.results, name='results'),
     path('<int:question_id>/vote/', views.vote, name='vote'),
     path('submit/', views.submission, name='submit'),
     path('submit/api/get_company/', views.company_autocomplete, name='get_company')
