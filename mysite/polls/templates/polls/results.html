@@ -13,6 +13,8 @@
 <a href="{% url 'polls:detail' question.id %}">Vote again?</a> <br>
 <a href="{% url 'polls:index' %}">Back to polls</a>
 
+<p>Window height: <span id="height"></span></p>
+<p>Window width: <span id="width"></span></p>
 
 <br><br>
 <!-- <div class="chart"></div>
@@ -72,33 +74,17 @@ var chart = d3.select(".chart")
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-// xdata = {{ choice.choice_text }};
-// widget.init(data);
-// x.domain(xdata.map(function(d) { return d.name; }));
-// y.domain([0, d3.max(data, function(d) { return d.value; })]);
-// xdata = 
-// ydata = 
-
-// data = {{ choice|safe }};
-// x.domain(data.map(function(d) { return d.choice_text }));
-// y.domain([0, d3.max(data, function(d) { return d.value; })]);
-
 d3.tsv("{% static 'polls/data.tsv' %}", type, function(error, data) {
-    // console.log("ASDASDASD");
-    // data = {{ choice|safe }};
-    // x.domain(data.map(function(d) { return d.choice_text }));
-    // y.domain([0, d3.max(data, function(d) { return d.value; })]);
-
   x.domain(data.map(function(d) { return d.name; }));
   y.domain([0, d3.max(data, function(d) { return d.value; })]);
 
 
   chart.append('text')
-      .attr('class', 'title')
-      .attr('x', width / 2)
-      .attr('y', -20)
-      .attr('text-anchor', 'middle')
-      .text('Vote Distribution')
+        .attr('class', 'title')
+        .attr('x', width / 2)
+        .attr('y', -20)
+        .attr('text-anchor', 'middle')
+        .text('Vote Distribution')
 
 
   chart.append("g")
@@ -127,32 +113,55 @@ d3.tsv("{% static 'polls/data.tsv' %}", type, function(error, data) {
         
 
   chart.selectAll(".bar")
-      .data(data)
+        .data(data)
     .enter().append("rect")
-      .attr("class", "bar")
-      .attr("x", function(d) { return x(d.name); })
-      .attr("y", function(d) { return y(d.value); })
-      .attr("height", function(d) { return height - y(d.value); })
-      .attr("width", x.rangeBand())
-      .text((data) => `${data.value}`);
+        .attr("class", "bar")
+        .attr("x", function(d) { return x(d.name); })
+        .attr("y", function(d) { return y(d.value); })
+        .attr("height", function(d) { return height - y(d.value); })
+        .attr("width", x.rangeBand())
 });
 
 function type(d) {
-  d.value = +d.value; // coerce to number
-  return d;
+        d.value = +d.value; // coerce to number
+        return d;
 }
 
-// const heightOutput = document.querySelector('#height');
-// const widthOutput = document.querySelector('#width');
+const heightOutput = document.querySelector('#height');
+const widthOutput = document.querySelector('#width');
 
-// function resize() {
-//   heightOutput.textContent = window.innerHeight;
-//   widthOutput.textContent = window.innerWidth;
-// }
+function resize() {
+    heightOutput.textContent = window.innerHeight;
+    widthOutput.textContent = window.innerWidth;
+    width = window.innerWidth - margin.left - margin.right,
+    height = window.innerHeight - margin.top - margin.bottom;
 
-// window.onresize = resize;
+    chart.attr("width", width);
+    chart.attr("height", height);
+ 
+    x.rangeRoundBands([0, width], .1);
+    // xAxis.scale(x);
+
+    // y.range([height, 0]);
+    // yAxis.scale(y).ticks(2);
+
+    // yAxis.ticks(2);
+    // xAxis.ticks(50);
+
+    // d3.select(".chart")
+    //     .select("g")
+    //     .attr("class", "x axis")
+    //     .attr("transform", "translate(0," + height + ")")
+    //     .call(xAxis)
+        
+    d3.selectAll(".bar").attr("width", Math.min(x.rangeBand(), 150))
+    //d3.select(".chart").selectAll("g").attr('text').attr('class', 'title').attr('x', width / 2)
+    // d3.selectAll(".bar").attr("height", function(d) { return height - y(d.value); })
+
+    // d3.selectAll(".bar")
+    // d3.select(".chart").transition()
+}
+
+window.onresize = resize;
 
 </script>
-
-
-<!-- "{% static 'polls/data.tsv' %}" -->
