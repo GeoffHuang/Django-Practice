@@ -11,7 +11,7 @@ from .models import Choice, Question, Company, QuestionForm
 import json
 import csv
 
-TSV_FILEPATH = "polls/static/polls/data.tsv"
+CSV_FILEPATH = "polls/static/polls/data.csv"
 
 
 class IndexView(generic.ListView):
@@ -45,11 +45,11 @@ class DetailView(generic.DetailView):
 # class based views suck
 def results(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
-    with open(TSV_FILEPATH, 'wt') as out_file:
-        tsv_writer = csv.writer(out_file, delimiter='\t')
-        tsv_writer.writerow(['name', 'value'])
+    with open(CSV_FILEPATH, 'wt') as csv_file:
+        csv_writer = csv.writer(csv_file, delimiter=',',)
+        csv_writer.writerow(['name', 'value'])
         for choice in question.choice_set.all():
-            tsv_writer.writerow([choice.choice_text, choice.votes])
+            csv_writer.writerow([choice.choice_text, choice.votes])
     return render(request, 'polls/results.html', {'question': question})
 
 
