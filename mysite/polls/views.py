@@ -11,7 +11,7 @@ from .models import Choice, Question, Company, QuestionForm
 import json
 import csv
 
-CSV_FILEPATH = "polls/static/polls/data.csv"
+CSV_FILEPATH = "polls/static/polls/vote_data.csv"
 
 
 class IndexView(generic.ListView):

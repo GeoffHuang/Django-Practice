@@ -1,6 +1,11 @@
+<!-- Load d3.js -->
+<script src="https://d3js.org/d3.v4.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.25.6/d3-legend.js"></script>
+
+<!-- Load css and js files -->
 {% load static %}
 <link rel="stylesheet" type="text/css" href="{% static 'polls/results.css' %}">
-<link rel="stylesheet" type="text/css" href="{% static 'polls/results.css' %}">
+<script type="text/javascript" src="{% static 'polls/results.js' %}"></script>
 
 <h1>{{ question.question_text }}</h1>
 
@@ -15,19 +20,14 @@
 
 <br><br><br>
 
-
-
-<!-- Load d3.js -->
-<script src="https://d3js.org/d3.v4.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.25.6/d3-legend.js"></script>
-
 <!-- Color Palette Choices -->
 <button onclick="changeColor(0)">Night Sky</button>
 <button onclick="changeColor(1)">Vegan Diet</button>
 <button onclick="changeColor(2)">Hot Dog Stand</button>
 
-<!-- Create a div where the graph will take place -->
+<!-- Create a div where the bar chart will take place -->
 <div id="my_ugly_barchart"></div>
+
 
 <script>
 
@@ -69,7 +69,7 @@ function changeColor(color_scheme){
                 "translate(" + margin.left + "," + margin.top + ")");
 
     // Parse the Data
-    d3.csv("{% static 'polls/data.csv' %}", function(data) {
+    d3.csv("{% static '/polls/vote_data.csv' %}", function(data) {
         var y_max = d3.max(data, function(d) { return d.value; });
 
         // LEGEND
