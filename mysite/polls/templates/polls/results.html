@@ -49,9 +49,9 @@ function changeColor(color_scheme){
     ];
 
     // set the dimensions and margins of the graph
-    var margin = {top: 80, right: 30, bottom: 70, left: 60},
+    var margin = {top: 80, right: 30, bottom: 70, left: 100},
         width = 552 - margin.left - margin.right - 80,
-        height = 480 - margin.top - margin.bottom;
+        height = 460 - margin.top - margin.bottom;
 
     // append the svg object to the body of the page
     var svg = d3.select("#my_ugly_barchart")
@@ -114,13 +114,23 @@ function changeColor(color_scheme){
         var x = d3.scaleBand()
             .range([ 0, width ])
             .domain(data.map(function(d) { return d.name; }))
-            .padding(0.2);
+            .padding(0.1);
         svg.append("g")
             .attr("transform", "translate(0," + height + ")")
             .call(d3.axisBottom(x))
             .selectAll("text")
-            .attr("transform", "translate(-10,0)rotate(-45)")
-            .style("text-anchor", "end");
+            .style("text-anchor", "middle");   
+
+        // X axis title 
+        svg.append("g")
+            .append('text')
+            .attr('class', 'label')
+            .attr('x', width / 2)
+            .attr('y', height + 45)
+            .attr('text-anchor', 'middle')
+            .style('font-weight', "bold")
+            .style('font-size', "16px")
+            .text('Choice');
 
         // Y axis
         var y = d3.scaleLinear()
@@ -128,6 +138,18 @@ function changeColor(color_scheme){
             .range([ height, 0]);
         svg.append("g")
             .call(d3.axisLeft(y));
+
+        // Y axis title
+        svg.append("g")
+            .append('text')
+            .attr('class', 'label')
+            .attr('x', -height / 2)
+            .attr('y', -40)
+            .attr('transform', 'rotate(-90)')
+            .attr('text-anchor', 'middle')
+            .style('font-weight', "bold")
+            .style('font-size', "16px")
+            .text('Votes');
 
         // Bars
         svg.selectAll("mybar")
