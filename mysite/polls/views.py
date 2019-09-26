@@ -20,7 +20,7 @@ class IndexView(generic.ListView):
 
     def get_queryset(self):
         """
-        Return the last twenty published questions (not including those set to
+        Return the last ten published questions (not including those set to
         be published in the future).
         """
         return Question.objects.filter(
