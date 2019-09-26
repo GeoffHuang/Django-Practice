@@ -3,9 +3,12 @@ from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.views import generic
 from django.utils import timezone
-# from django.template import loader
+from django.forms import inlineformset_factory
+from django.contrib import messages
 
-from .models import Choice, Question
+from .models import Choice, Question, Company, QuestionForm
+
+import json
 
 
 class IndexView(generic.ListView):
@@ -14,12 +17,12 @@ class IndexView(generic.ListView):
 
     def get_queryset(self):
         """
-        Return the last five published questions (not including those set to be
-        published in the future).
+        Return the last twenty published questions (not including those set to
+        be published in the future).
         """
         return Question.objects.filter(
             pub_date__lte=timezone.now()
-        ).order_by('-pub_date')[:20]
+        ).order_by('-pub_date')[:10]
 
 
 class DetailView(generic.DetailView):
@@ -33,7 +36,6 @@ class ResultsView(generic.DetailView):
 
 
 def vote(request, question_id):
-
     question = get_object_or_404(Question, pk=question_id)
     try:
         selected_choice = question.choice_set.get(pk=request.POST['choice'])
@@ -51,3 +53,45 @@ def vote(request, question_id):
         # user hits the Back button.
         return HttpResponseRedirect(
             reverse('polls:results', args=(question.id,)))
+
+
+def submission(request):
+    ChoiceFormSet = inlineformset_factory(
+        Question, Choice, fields=('choice_text',), extra=2)
+    if request.method == 'POST':
+        company_name = request.POST.get('company')
+        if not Company.objects.filter(name=company_name):
+            company = get_object_or_404(Company, pk=1)
+        else:
+            company = Company.objects.get(name=company_name)
+        q = Question(company=company)
+        form = QuestionForm(request.POST, instance=q)
+        formset = ChoiceFormSet(request.POST, instance=q)
+        if form.is_valid() and formset.is_valid():
+            new_question = form.save()
+            for choice in formset:
+                new_choice = choice.save(commit=False)
+                new_choice.question = new_question
+                new_choice.save()
+            return HttpResponseRedirect(reverse('polls:index'))
+    else:
+        form = QuestionForm()
+        formset = ChoiceFormSet()
+    return render(request, 'polls/submit.html', {
+        'form': form, 'formset': formset})
+
+
+def company_autocomplete(request):
+    if request.is_ajax():
+        q = request.GET.get('term', '')
+        companies = Company.objects.filter(name__startswith=q)[:20]
+        results = []
+        for company in companies:
+            company_json = {}
+            company_json['value'] = company.name
+            results.append(company_json)
+        data = json.dumps(results)
+    else:
+        data = 'fail'
+    mimetype = 'application/json'
+    return HttpResponse(data, mimetype)

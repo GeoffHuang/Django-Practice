@@ -1,4 +1,9 @@
-body {
+h1 {
+    font-size: 50px;
+    margin-bottom: 0px;
+}
+
+/* body {
     background: white url("images/background1.jpg") no-repeat;
     background-size: cover;
-}
+} */

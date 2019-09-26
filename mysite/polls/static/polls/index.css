@@ -1,9 +1,14 @@
-li a {
-    color: magenta; 
+h1 {
     font-size: 50px;
+    margin-bottom: 0px;
 }
 
-body {
+li a {
+    /* color: magenta;  */
+    font-size: 30px;
+}
+
+/* body {
     background: white url("images/background1.jpg") no-repeat;
     background-size: cover;
-}
+} */
