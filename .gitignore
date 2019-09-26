@@ -2,3 +2,8 @@ venv/
 .vscode/
 __pycache__/
 .DS_Store
+dump.rdb
+db.sqlite3
+polls/static/polls/vote_data.csv
+polls/__pycache__/
+secret.py
