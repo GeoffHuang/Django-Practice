@@ -6,7 +6,8 @@ from django.utils import timezone
 from django.forms import inlineformset_factory
 from django.contrib import messages
 
-from .models import Choice, Question, Company, QuestionForm
+from .models import Choice, Question, Company
+from .forms import QuestionForm
 
 import json
 import csv
