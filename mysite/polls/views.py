@@ -85,14 +85,13 @@ def submission(request):
         q = Question(company=company)
         form = QuestionForm(request.POST, instance=q)
         formset = ChoiceFormSet(request.POST, instance=q)
-        print("TEST")
         if form.is_valid() and formset.is_valid():
             new_question = form.save()
             for choice in formset:
-                print(type(choice))
                 new_choice = choice.save(commit=False)
                 new_choice.question = new_question
                 new_choice.save()
+            form.send_email()
             return HttpResponseRedirect(reverse('polls:index'))
     else:
         form = QuestionForm()

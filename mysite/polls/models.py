@@ -6,6 +6,10 @@ from django.utils import timezone
 from django.forms import ModelForm, inlineformset_factory, TextInput
 from django.core.exceptions import ValidationError
 from django.forms.models import BaseInlineFormSet
+from django.conf import settings
+from django.core.mail import EmailMessage
+
+from .tasks import send_feedback_email_task
 
 import yaml
 
@@ -43,7 +47,7 @@ class Company(models.Model):
 
 class Question(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
-    question_text = models.CharField(max_length=200)
+    question_text = models.CharField(max_length=200, unique=True)
     pub_date = models.DateTimeField('date published', default=timezone.now)
 
     def __str__(self):
@@ -106,3 +110,12 @@ class QuestionForm(ModelForm):
         entry = cleaned_data.get(field)
         if not Company.objects.filter(name=entry):
             self.add_error(field, "Please enter a Fortune 100 company")
+
+    def send_email(self):
+        question_text = super().clean().get('question_text')
+        q = Question.objects.get(question_text=question_text)
+        subject = "New Poll"
+        body = question_text
+        for choice in q.choice_set.all():
+            body += "\n\u2022 " + choice.choice_text
+        send_feedback_email_task.delay(body)
