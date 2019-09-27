@@ -25,7 +25,7 @@ class IndexView(generic.ListView):
         be published in the future).
         """
         return Question.objects.filter(
-            pub_date__lte=timezone.now()#, status="ready"
+            pub_date__lte=timezone.now()
         ).order_by('-pub_date')[:10]
 
 
@@ -34,16 +34,6 @@ class DetailView(generic.DetailView):
     template_name = 'polls/detail.html'
 
 
-# class ResultsView(generic.DetailView):
-#     model = Question
-#     template_name = 'polls/results.html'
-
-#     def get_vote_data(self, **kwargs):
-#         context['my_dictionary'] = json.dumps(self.object.mydict)
-#         print("ASD")
-
-
-# class based views suck
 def results(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
     with open(CSV_FILEPATH, 'wt') as csv_file:
