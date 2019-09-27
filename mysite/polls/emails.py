@@ -10,7 +10,7 @@ def send_email(message):
 
     email = EmailMessage(
         email_subject, email_body, settings.EMAIL_HOST_USER,
-        [x[1] for x in settings.MANAGERS], [],
+        [x for x in settings.MANAGERS], [],
     )
 
     return email.send(fail_silently=False)

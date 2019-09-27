@@ -25,7 +25,7 @@ class IndexView(generic.ListView):
         be published in the future).
         """
         return Question.objects.filter(
-            pub_date__lte=timezone.now()
+            pub_date__lte=timezone.now(), status="ready"
         ).order_by('-pub_date')[:10]
 
 
