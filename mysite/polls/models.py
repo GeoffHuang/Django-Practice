@@ -1,11 +1,8 @@
 import datetime
 
-from django import forms
 from django.db import models
 from django.utils import timezone
-from django.forms import ModelForm, inlineformset_factory, TextInput
 from django.core.exceptions import ValidationError
-from django.forms.models import BaseInlineFormSet
 
 import yaml
 
@@ -43,8 +40,9 @@ class Company(models.Model):
 
 class Question(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
-    question_text = models.CharField(max_length=200)
+    question_text = models.CharField(max_length=200, unique=True)
     pub_date = models.DateTimeField('date published', default=timezone.now)
+    status = models.CharField(max_length=200, default="ready")
 
     def __str__(self):
         return self.question_text
@@ -80,29 +78,3 @@ class Choice(models.Model):
             print("Please do not submit choice text containing curse words.")
         else:
             super(Choice, self).save(*args, **kwargs)
-
-
-class QuestionForm(ModelForm):
-    company = forms.CharField(max_length=200)
-
-    class Meta:
-        model = Question
-        fields = ['question_text']
-
-    # give {{ form.company }} an id tag for the AJAX autocomplete
-    def __init__(self, *args, **kwargs):
-        super(QuestionForm, self).__init__(*args, **kwargs)
-        self.fields['company'].widget = TextInput(
-            attrs={'id': 'company'})
-
-    def clean(self):
-        cleaned_data = super().clean()
-        field = 'question_text'
-        entry = cleaned_data.get(field)
-        for curse_word in curse_words_in_entry(entry):
-            msg = "Please don't use curse word: " + curse_word
-            self.add_error(field, msg)
-        field = 'company'
-        entry = cleaned_data.get(field)
-        if not Company.objects.filter(name=entry):
-            self.add_error(field, "Please enter a Fortune 100 company")

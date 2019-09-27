@@ -1,14 +1,6 @@
 <link rel="stylesheet" href="http://code.jquery.com/ui/1.8.18/themes/base/jquery-ui.css" type="text/css" media="all" />
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript">
-</script> <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js" type="text/javascript"></script>
-
-<!-- {% if messages %}
-<ul>
-   {% for message in messages %}
-	   <li>{{ message }}</li>
-   {% endfor %}
-</ul>
-{% endif %} -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js" type="text/javascript"></script>
 
 <div class="ui-widget">
     <form method="post">
@@ -21,7 +13,6 @@
         {{ form.company.errors }}
         {{ form.company.label_tag }}
         {{ form.company }}
-        <!-- <input type="text" id="company" name="company"> -->
         <br> <br>
         {{ formset.management_form }}
         {% for form in formset %}

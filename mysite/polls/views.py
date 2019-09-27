@@ -6,7 +6,8 @@ from django.utils import timezone
 from django.forms import inlineformset_factory
 from django.contrib import messages
 
-from .models import Choice, Question, Company, QuestionForm
+from .models import Choice, Question, Company
+from .forms import QuestionForm
 
 import json
 import csv
@@ -20,11 +21,11 @@ class IndexView(generic.ListView):
 
     def get_queryset(self):
         """
-        Return the last twenty published questions (not including those set to
+        Return the last ten published questions (not including those set to
         be published in the future).
         """
         return Question.objects.filter(
-            pub_date__lte=timezone.now()
+            pub_date__lte=timezone.now(), status="ready"
         ).order_by('-pub_date')[:10]
 
 
@@ -33,16 +34,6 @@ class DetailView(generic.DetailView):
     template_name = 'polls/detail.html'
 
 
-# class ResultsView(generic.DetailView):
-#     model = Question
-#     template_name = 'polls/results.html'
-
-#     def get_vote_data(self, **kwargs):
-#         context['my_dictionary'] = json.dumps(self.object.mydict)
-#         print("ASD")
-
-
-# class based views suck
 def results(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
     with open(CSV_FILEPATH, 'wt') as csv_file:
@@ -75,7 +66,7 @@ def vote(request, question_id):
 
 def submission(request):
     ChoiceFormSet = inlineformset_factory(
-        Question, Choice, fields=('choice_text',), extra=2)
+        Question, Choice, fields=('choice_text',), extra=4)
     if request.method == 'POST':
         company_name = request.POST.get('company')
         if not Company.objects.filter(name=company_name):
@@ -83,16 +74,16 @@ def submission(request):
         else:
             company = Company.objects.get(name=company_name)
         q = Question(company=company)
+        q.status = "processing"
         form = QuestionForm(request.POST, instance=q)
         formset = ChoiceFormSet(request.POST, instance=q)
-        print("TEST")
         if form.is_valid() and formset.is_valid():
             new_question = form.save()
             for choice in formset:
-                print(type(choice))
                 new_choice = choice.save(commit=False)
                 new_choice.question = new_question
                 new_choice.save()
+            form.send_email()
             return HttpResponseRedirect(reverse('polls:index'))
     else:
         form = QuestionForm()
