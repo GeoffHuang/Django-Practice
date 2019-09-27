@@ -76,7 +76,7 @@ def vote(request, question_id):
 
 def submission(request):
     ChoiceFormSet = inlineformset_factory(
-        Question, Choice, fields=('choice_text',), extra=2)
+        Question, Choice, fields=('choice_text',), extra=4)
     if request.method == 'POST':
         company_name = request.POST.get('company')
         if not Company.objects.filter(name=company_name):
