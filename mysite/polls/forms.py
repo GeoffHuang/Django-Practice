@@ -37,4 +37,4 @@ class QuestionForm(forms.ModelForm):
         for choice in q.choice_set.all():
             body += "\n\u2022 " + choice.choice_text
         send_email_task.delay(body)
-        change_poll_status_task.s(question_text).apply_async(countdown=5)
+        change_poll_status_task.s(question_text).apply_async(countdown=3)
