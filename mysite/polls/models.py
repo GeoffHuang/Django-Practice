@@ -95,8 +95,6 @@ class QuestionForm(ModelForm):
         self.fields['company'].widget = TextInput(
             attrs={'id': 'company'})
 
-    #ChoiceFormSet = inlineformset_factory(Question, Choice, fields=('choice_text',))
-
     def clean(self):
         cleaned_data = super().clean()
         field = 'question_text'
