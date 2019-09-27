@@ -4,7 +4,7 @@ from django.template import Context
 from django.template.loader import render_to_string
 
 
-def send_feedback_email(message):
+def send_email(message):
     email_subject = "New Poll"
     email_body = message
 

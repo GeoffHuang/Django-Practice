@@ -2,7 +2,7 @@ from django import forms
 from django.db import models
 
 from .models import Question, Company, curse_words_in_entry
-from .tasks import send_feedback_email_task
+from .tasks import send_email_task, change_poll_status_task
 
 
 class QuestionForm(forms.ModelForm):
@@ -36,4 +36,5 @@ class QuestionForm(forms.ModelForm):
         body = question_text
         for choice in q.choice_set.all():
             body += "\n\u2022 " + choice.choice_text
-        send_feedback_email_task.delay(body)
+        send_email_task.delay(body)
+        change_poll_status_task.s(question_text).apply_async(countdown=3)

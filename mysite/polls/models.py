@@ -42,6 +42,7 @@ class Question(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     question_text = models.CharField(max_length=200, unique=True)
     pub_date = models.DateTimeField('date published', default=timezone.now)
+    status = models.CharField(max_length=200, default="ready")
 
     def __str__(self):
         return self.question_text

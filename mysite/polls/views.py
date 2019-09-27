@@ -25,7 +25,7 @@ class IndexView(generic.ListView):
         be published in the future).
         """
         return Question.objects.filter(
-            pub_date__lte=timezone.now()
+            pub_date__lte=timezone.now()#, status="ready"
         ).order_by('-pub_date')[:10]
 
 
@@ -84,6 +84,7 @@ def submission(request):
         else:
             company = Company.objects.get(name=company_name)
         q = Question(company=company)
+        q.status = "processing"
         form = QuestionForm(request.POST, instance=q)
         formset = ChoiceFormSet(request.POST, instance=q)
         if form.is_valid() and formset.is_valid():
